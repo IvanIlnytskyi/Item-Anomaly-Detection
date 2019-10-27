@@ -6,6 +6,8 @@ import torch
 from utils import get_augmentation_dict, split_dataset
 from train_validate_utils import train
 
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print(device)
 full_ds = ImageDataset(transform=get_augmentation_dict()['training'])
 train_ds, val_ds = split_dataset(full_ds, 0.1)
 net = MINet(len(full_ds.y_codec.classes_))
@@ -18,6 +20,7 @@ valloader = torch.utils.data.DataLoader(val_ds, batch_size=16,
 #
 
 config = {
+    'device' : device,
     'epochs': 1,
     'net': net,
     'optimizer': optimizer,
