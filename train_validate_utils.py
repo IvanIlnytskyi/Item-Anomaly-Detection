@@ -9,8 +9,11 @@ def validate(**config):
     val_loss = 0
     with torch.no_grad():
         for data in config['val_loader']:
-            images, labels = data
-            outputs = config['net'](images)
+            inputs, labels = data
+            inputs = inputs.to(config['device'])
+            labels = labels.to(config['device'])
+
+            outputs = config['net'](inputs)
 
             # validation loss calculation
             loss = config['criterion'](outputs, labels)
@@ -27,13 +30,16 @@ def validate(**config):
 
 def train(**config):
     min_loss = float('inf')
+    config['net'].to(config['device']).train()
+
     for epoch in range(config['epochs']):
         train_loss = 0.0
         correct = 0
         total = 0
         for i, data in enumerate(config['train_loader'], 0):
             inputs, labels = data
-
+            inputs = inputs.to(config['device'])
+            labels = labels.to(config['device'])
             config['optimizer'].zero_grad()
 
             outputs = config['net'](inputs)
@@ -54,8 +60,10 @@ def train(**config):
         val_loss, val_acc = validate(**config)
         print('\n[Epoch %d] ---- train_loss: %.5f ---- val_loss: %.5f ---- train_acc: %.5f ---- val_acc: %.5f'
                % (epoch + 1, train_loss,val_loss,train_acc,val_acc))
-        # if min_loss > val_loss:
-        #     torch.save(config['net'].state_dict(), config['model_path'])
-        #     min_loss = val_loss
-        #logging.info('Epoch {} ---- train_loss {} ---- val_loss {} ---- train acc {} ----- val acc {}'
-        #         .format(epoch, train_loss, val_loss, train_acc, val_acc))
+        if min_loss > val_loss:
+             torch.save(config['net'].state_dict(), config['model_path'])
+             min_loss = val_loss
+        config['logger'].add_scalar('Training Loss', train_loss, epoch)
+        config['logger'].add_scalar('Validation Loss', val_loss, epoch)
+        config['logger'].add_scalar('Training Accuracy', train_acc, epoch)
+        config['logger'].add_scalar('Valdation Accuracy', val_acc, epoch)

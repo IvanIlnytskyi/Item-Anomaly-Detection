@@ -1,5 +1,22 @@
 from torch import nn
 import torch.nn.functional as F
+import torchvision
+
+
+def get_pretrained_resnet(num_classes):
+    """Loads pretrained resnet and freezes the weights"""
+    net = torchvision.models.resnet50(pretrained=True)
+    ## Change the last layer
+    num_ftrs = net.fc.in_features
+    net.fc = nn.Linear(num_ftrs, num_classes)
+    ## freezing layers
+    ct = 0
+    for child in net.children():
+        ct += 1
+        if ct < 9:
+            for param in child.parameters():
+                param.requires_grad = False
+    return net
 
 
 def conv_module(in_num, out_num):
@@ -14,7 +31,7 @@ def conv_module(in_num, out_num):
 def fully_connected_module(in_num, out_num):
     """"Creates fully connected layer with relu and dropout """
     return nn.Sequential(
-        nn.Dropout(),
+        nn.Dropout(p=0.6),
         nn.Linear(in_num, out_num),
         nn.ReLU(inplace=True)
     )
@@ -49,41 +66,44 @@ class MINet(nn.Module):
 
         return out
 
-    class TitleNet(nn.Module):
-        def __init__(self, input_size, num_classes):
-            super(MINet, self).__init__()
-            self.num_classes = num_classes
-            self.input_size = input_size
 
-            self.fcm1 = fully_connected_module(input_size, 400)
-            self.fcm2 = fully_connected_module(400, 120)
-            self.fcm3 = fully_connected_module(120, 20)
-            self.fcm4 = nn.Linear(50, num_classes)
+class TitleNet(nn.Module):
+    def __init__(self, input_size, num_classes):
+        super(TitleNet, self).__init__()
+        self.num_classes = num_classes
+        self.input_size = input_size
 
-        def forward(self, x):
-            out = self.fcm1(x)
-            out = self.fcm2(out)
-            out = self.fcm3(out)
-            out = self.fcm4(out)
+        self.fcm1 = fully_connected_module(input_size, 400)
+        self.fcm2 = fully_connected_module(400, 120)
+        self.fcm3 = fully_connected_module(120, 60)
+        self.fcm4 = nn.Linear(60, num_classes)
 
-            return out
+    def forward(self, x):
+        out = self.fcm1(x)
+        out = self.fcm2(out)
+        out = self.fcm3(out)
+        out = self.fcm4(out)
 
-        class DescriptionNet(nn.Module):
-            def __init__(self, input_size, num_classes):
-                super(MINet, self).__init__()
-                self.num_classes = num_classes
-                self.input_size = input_size
+        return out
 
-                self.fcm1 = fully_connected_module(input_size, 100)
-                self.fcm2 = fully_connected_module(100, 80)
-                self.fcm3 = fully_connected_module(80, 40)
-                self.fcm4 = nn.Linear(40, num_classes)
 
-            def forward(self, x):
-                out = self.fcm1(x)
-                out = self.fcm2(out)
-                out = self.fcm3(out)
-                out = self.fcm4(out)
+class DescriptionNet(nn.Module):
+    def __init__(self, input_size, num_classes):
+        super(DescriptionNet, self).__init__()
+        self.num_classes = num_classes
+        self.input_size = input_size
 
-                return out
+        self.fcm1 = fully_connected_module(input_size, 100)
+        self.fcm2 = fully_connected_module(100, 80)
+        self.fcm3 = fully_connected_module(80, 40)
+        self.fcm4 = nn.Linear(40, num_classes)
+
+    def forward(self, x):
+        out = self.fcm1(x)
+        out = self.fcm2(out)
+        out = self.fcm3(out)
+        out = self.fcm4(out)
+
+        return out
+
 
