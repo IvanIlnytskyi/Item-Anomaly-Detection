@@ -137,6 +137,7 @@ class ExploratoryDataset(Dataset):
         self.title_len = len(self.Title[0])
         self.desc_len = len(self.Description[0])
         self.y_len = len(self.y_codec.classes_)
+        self.id = self.df['id'].to_numpy()
 
     def _init_dataset(self):
         nlp = spacy.load('en_core_web_md')
@@ -158,4 +159,4 @@ class ExploratoryDataset(Dataset):
 
         if self.transform:
             image = self.transform(image)
-        return image, self.Description[idx], torch.from_numpy(self.Title[idx]).float(), self.Y[idx]
+        return image, self.Description[idx], torch.from_numpy(self.Title[idx]).float(), self.Y[idx], self.id[idx]
