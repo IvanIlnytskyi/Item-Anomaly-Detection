@@ -5,6 +5,26 @@ import torch
 from datasets import ImageDataset,DescriptionDataset,TitleDataset
 from models import MINet,DescriptionNet,TitleNet,get_pretrained_resnet
 
+IMAGE_COLUMNS = ['id','category','image_class_prediction',
+                 'image_gt_distance','image_probability']
+
+DESCRIPTION_COLUMNS = ['id','name','description','category','description_class_prediction',
+                       'description_gt_distance','description_probability']
+
+TITLE_COLUMNS = ['id','name','category','title_class_prediction',
+                    'title_gt_distance','title_probability']
+
+DESCRIPTION_TITLE_COLUMNS = ['id','description','name','category','description_class_prediction',
+                              'title_class_prediction','description_title_distance','description_probability',
+                             'title_probability']
+
+DESCRIPTION_IMAGE_COLUMNS = ['id','description','category','description_class_prediction','image_class_prediction',
+                            'description_image_distance', 'image_probability','description_probability']
+
+IMAGE_TITLE_COLUMNS = ['id','name','category','image_class_prediction',
+                        'title_class_prediction','title_image_distance',
+                        'image_probability','title_probability']
+
 def get_dataset(name):
     if name == 'image':
         return ImageDataset(transform=get_augmentation_dict())
