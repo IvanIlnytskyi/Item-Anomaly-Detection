@@ -1,4 +1,4 @@
-# Item-Price-Prediction
+# Item-Anomaly-Detection
 Project to detect anomalies in item details: description, title, image and category.
 
 ### To run the project firstly run cleaning script
