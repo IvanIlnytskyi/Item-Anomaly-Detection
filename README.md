@@ -30,3 +30,8 @@ python3 postprocessing.py
 ```
 
 ## Now everything is ready to explore and rerun 'Anomaly detection' jupyter notebook.
+
+P.S. you might have issue when installing 'en_core_web_md'. If this happens, remove the corresponding row in requirements file and run the following command after you installed everything:
+```
+python3 -m spacy download en_core_web_md
+```
