@@ -3,7 +3,7 @@ Project to detect anomalies in item details: description, title, image and categ
 This project should have the following folder structure:
 
 ```
-├── Item-Price-Prediction (git repo)
+├── Item-Anomaly-Detection (git repo)
 ├── data (should contain initial dataframe and unwrapped photo dataset)
 ├── logs (on google drive if not training by yourself)
 ├── models (on google drive if not training by yourself)```
