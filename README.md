@@ -21,7 +21,7 @@ python3 train.py --epochs 100 --model=description --dataset=description --batch-
 python3 train.py --epochs 100 --model=title --dataset=title --batch-size 128 --learning-rate 0.015 --model-save-name=title_100_015
 python3 train.py --epochs 50 --model=resnet_pretrained --dataset=image --batch-size 128 --learning-rate 0.002 --model-save-name=image_resnet_50_002
 ```
-You can find pretrained models and tensorboard logs here:
+You can find __pretrained models and tensorboard logs__ here:
 https://drive.google.com/drive/folders/1RBTg1NEgZ2PUN4ir1qkdf-8CY7O4sy5y?usp=sharing
 
 ### 3. Postprocessing script to obtain classification results (or you can find postprocessing results in data folder on drive)
